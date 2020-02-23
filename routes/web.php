@@ -1,9 +1,6 @@
 <?php
 
 Auth::routes(['register' => false]);
-Route::get('/', function () {
-    return view('admin.pages.dashboard');
-});
 Route::get('/home', 'HomeController@index')->name('home');
 Route::group(['prefix' => 'login'], function () use ($router) {
     $router->get('/admin', 'Auth\LoginController@showAdminLoginForm')->name('view.login.admin');

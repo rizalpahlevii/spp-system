@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class TahunAjaranController extends Controller
 {
-    protected $path = 'admin.pages.';
+    protected $path = 'backend.pages.';
     public function index()
     {
         $tahun_ajaran = Tahun_ajaran::with('tahun_ajaran_setting')->get();
@@ -131,7 +131,8 @@ class TahunAjaranController extends Controller
     }
     public function updateSetting(Request $request, $id)
     {
-        $setting = Tahun_ajaran_setting::find($id);
+        $get = Tahun_ajaran_setting::where('tahun_ajaran_id', $id)->first();
+        $setting = Tahun_ajaran_setting::find($get->id);
         $setting->bulan1 = $request->bulan_ke1;
         $setting->bulan2 = $request->bulan_ke2;
         $setting->bulan3 = $request->bulan_ke3;
