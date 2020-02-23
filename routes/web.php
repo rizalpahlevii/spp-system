@@ -10,6 +10,10 @@ Route::group(['prefix' => 'login'], function () use ($router) {
 });
 Route::group(['prefix' => 'admin', 'middleware' => ['auth.petugas', 'auth']], function () use ($router) {
     $router->get('/', 'Admin\MainController@dashboard')->name('admin.dashboard');
+    $router->get('/profile', 'Admin\MainController@profile')->name('admin.profile');
+    $router->post('/profile', 'Admin\MainController@updateProfile')->name('admin.profile_update');
+    $router->get('/changepassword', 'Admin\MainController@changePassword')->name('admin.change_password');
+    $router->post('/changepassword', 'Admin\MainController@updatePassword')->name('admin.password_update');
 
     // crud tahun ajaran
     $router->group(['prefix' => 'tahun-ajaran'], function () use ($router) {
@@ -34,6 +38,28 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.petugas', 'auth']], fu
         $router->get('/{id}/siswa/create', 'Admin\KelasController@createSiswaByKelas')->name('admin.kelas_tambah_siswa');
         $router->get('/find/{id}', 'Admin\KelasController@show')->name('admin.kelas_show');
         $router->get('/delete/{id}', 'Admin\KelasController@destroy')->name('admin.kelas_delete');
+    });
+
+    // crud siswa
+
+
+    $router->group(['prefix' => 'siswa'], function () use ($router) {
+        $router->get('/', 'Admin\SiswaController@index')->name('admin.siswa_index');
+        $router->get('/create', 'Admin\SiswaController@create')->name('admin.siswa_create');
+        $router->post('/store', 'Admin\SiswaController@store')->name('admin.siswa_store');
+        $router->post('/update/{id}', 'Admin\SiswaController@update')->name('admin.siswa_update');
+        $router->get('/{id}/edit', 'Admin\SiswaController@show')->name('admin.siswa_show');
+        $router->get('/{id}/detail', 'Admin\SiswaController@detail')->name('admin.siswa_detail');
+        $router->get('/delete/{id}', 'Admin\SiswaController@destroy')->name('admin.siswa_delete');
+    });
+
+    // crud spp
+    $router->group(['prefix' => 'spp'], function () use ($router) {
+        $router->get('/', 'Admin\SppController@index')->name('admin.spp_index');
+        $router->post('/store', 'Admin\SppController@store')->name('admin.spp_create');
+        $router->post('/update', 'Admin\SppController@update')->name('admin.spp_update');
+        $router->get('/find/{id}', 'Admin\SppController@show')->name('admin.spp_show');
+        $router->get('/delete/{id}', 'Admin\SppController@destroy')->name('admin.spp_delete');
     });
 });
 

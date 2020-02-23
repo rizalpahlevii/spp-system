@@ -80,7 +80,7 @@
                                         
                                         @if (!$row->tahun_ajaran_setting)
                                             
-                                            <a href="#" class="btn btn-success btn-edit" data-kode="{{$row->id}}"><i class="fa fa-cogs"></i></a>
+                                            <a href="#" class="btn btn-warning btn-edit" data-kode="{{$row->id}}"><i class="fa fa-edit"></i></a>
                                             <a href="{{route('admin.ta_setting',$row->id)}}" class="btn btn-success"><i class="fa fa-cogs"></i></a>
                                             <a href="{{route('admin.ta_delete',$row->id)}}" class="btn btn-danger"><i class="fa fa-trash"></i></a>                                      
                                         @else

@@ -135,3 +135,18 @@ if (!function_exists('getBulan')) {
         return $bulan;
     }
 }
+if (!function_exists('set_selected_option_kelas')) {
+    function set_selected_option_kelas($param)
+    {
+        if (isset($_GET['kelas'])) {
+            if ($_GET['kelas'] == $param) {
+                $status = "selected";
+            } else {
+                $status = " ";
+            }
+        } else {
+            $status = " ";
+        }
+        return $status;
+    }
+}

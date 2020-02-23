@@ -21,6 +21,7 @@ class CreateSiswaTable extends Migration
             $table->string('password');
             $table->unsignedBigInteger('kelas_id');
             $table->text('alamat')->nullable();
+            $table->enum('jenis_kelamin', ['Laki-laki', 'Perempuan']);
             $table->string('no_telp')->nullable();
             $table->unsignedBigInteger('spp_id');
             $table->timestamps();

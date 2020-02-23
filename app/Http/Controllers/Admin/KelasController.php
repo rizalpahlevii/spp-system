@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 
 class KelasController extends Controller
 {
-    protected $path = 'admin.pages.';
+    protected $path = 'backend.pages.';
     public function index()
     {
         $kelas = Kelas::with('tahun_ajaran')->get();
