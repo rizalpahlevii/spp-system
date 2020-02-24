@@ -41,8 +41,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.petugas', 'auth']], fu
     });
 
     // crud siswa
-
-
     $router->group(['prefix' => 'siswa'], function () use ($router) {
         $router->get('/', 'Admin\SiswaController@index')->name('admin.siswa_index');
         $router->get('/create', 'Admin\SiswaController@create')->name('admin.siswa_create');
@@ -60,6 +58,20 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.petugas', 'auth']], fu
         $router->post('/update', 'Admin\SppController@update')->name('admin.spp_update');
         $router->get('/find/{id}', 'Admin\SppController@show')->name('admin.spp_show');
         $router->get('/delete/{id}', 'Admin\SppController@destroy')->name('admin.spp_delete');
+    });
+
+    // crud petugas
+    $router->group(['prefix' => 'petugas'], function () use ($router) {
+        $router->get('/', 'Admin\PetugasController@index')->name('admin.petugas_index');
+        $router->post('/store', 'Admin\PetugasController@store')->name('admin.petugas_store');
+        $router->get('/create', 'Admin\PetugasController@create')->name('admin.petugas_create');
+        $router->post('/{id}/update', 'Admin\PetugasController@update')->name('admin.petugas_update');
+        $router->get('{id}/edit', 'Admin\PetugasController@show')->name('admin.petugas_edit');
+        $router->get('{id}/delete', 'Admin\PetugasController@delete')->name('admin.petugas_delete');
+    });
+
+    $router->group(['prefix' => 'pembayaran'], function () use ($router) {
+        $router->get('/', 'Admin\PembayaranController@index')->name('admin.pembayaran_index');
     });
 });
 

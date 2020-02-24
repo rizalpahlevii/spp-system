@@ -150,3 +150,18 @@ if (!function_exists('set_selected_option_kelas')) {
         return $status;
     }
 }
+if (!function_exists('set_selected_option_ta')) {
+    function set_selected_option_ta($param)
+    {
+        if (isset($_GET['ta'])) {
+            if ($_GET['ta'] == $param) {
+                $status = "selected";
+            } else {
+                $status = " ";
+            }
+        } else {
+            $status = " ";
+        }
+        return $status;
+    }
+}

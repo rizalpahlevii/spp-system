@@ -1,5 +1,5 @@
 @extends('backend.layout.template')
-@section('page','Siswa')    
+@section('page','Petugas')    
 @section('content')  
 <div class="container-fluid  dashboard-content">
     <!-- ============================================================== -->
@@ -8,14 +8,14 @@
     <div class="row">
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
             <div class="page-header">
-                <h2 class="pageheader-title">Data Siswa</h2>
+                <h2 class="pageheader-title">Data Petugas</h2>
                 <p class="pageheader-text">Proin placerat ante duiullam scelerisque a velit ac porta, fusce sit amet vestibulum mi. Morbi lobortis pulvinar quam.</p>
                 <div class="page-breadcrumb">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">E-SPP</a></li>
-                            <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">Siswa</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Data Siswa</li>
+                            <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">Petugas</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Data Petugas</li>
                         </ol>
                     </nav>
                 </div>
@@ -31,7 +31,7 @@
         <!-- ============================================================== -->
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
             <div class="card">
-                <h5 class="card-header">Data Siswa</h5>
+                <h5 class="card-header">Data Petugas</h5>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
@@ -42,51 +42,32 @@
                             @endif
                         </div>
                     </div>
-                    <a href="{{route('admin.siswa_create')}}" class="btn btn-primary mb-2 btn-add">Tambah Siswa</a>
-                    <form action="" method="GET">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="kelas">Kelas</label>
-                                    <select name="kelas" id="kelas" class="form-control">
-                                        <option value="all" {{set_selected_option_kelas('all')}}>Semua Siswa</option>
-                                        @foreach ($kelas as $rowk)
-                                            <option value="{{$rowk->id}}" {{set_selected_option_kelas($rowk->id)}}>{{$rowk->nama_kelas}} - {{$rowk->kompetensi_keahlian}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <button type="submit" class="btn btn-success mt-4">Filter</button>
-                            </div>
-                        </div>
-                    </form>
+                    <a href="{{route('admin.petugas_create')}}" class="btn btn-primary mb-2 btn-add">Tambah Siswa</a>
+                    
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="dataTable">
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>NIS</th>
-                                    <th>Nama</th>
-                                    <th>Kelas</th>
-                                    <th>Telp</th>
-                                    <th>Jenis Kelamin</th>
-                                    <th>Action</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Username</th>
+                                    <th>Level</th>
+                                    <th>Bergabung Sejak</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($siswa as $row)
+                                @foreach ($users as $item)
                                     <tr>
                                         <td>{{$loop->iteration}}</td>
-                                        <td>{{$row->nis}}</td>
-                                        <td>{{$row->name}}</td>
-                                        <td>{{$row->kelas->nama_kelas}}</td>
-                                        <td>{{$row->no_telp}}</td>
-                                        <td>{{$row->jenis_kelamin}}</td>
+                                        <td>{{$item->name}}</td>
+                                        <td>{{$item->email}}</td>
+                                        <td>{{$item->username}}</td>
+                                        <td>{{$item->level}}</td>
+                                        <td>{{$item->created_at->format('d - M - Y')}}</td>
                                         <td>
-                                            <a href="{{route('admin.siswa_detail',$row->id)}}" class="btn btn-success"><i class="fas fa-list"></i></a>
-                                            <a href="{{route('admin.siswa_show',$row->id)}}" class="btn btn-warning"><i class="fas fa-edit"></i></a>
-                                            <a href="{{route('admin.siswa_delete',$row->id)}}" class="btn btn-danger" onclick="return confirm('Yakin ingin menghapus siswa ini ?')"><i class="fas fa-trash-alt"></i></a>
+                                            <a href="{{route('admin.petugas_edit',$item->id)}}" class="btn btn-warning"><i class="fas fa-edit"></i></a>
                                         </td>
                                     </tr>
                                 @endforeach

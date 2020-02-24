@@ -21,12 +21,14 @@ class CreatePembayaranTable extends Migration
             $table->char('bulan_bayar');
             $table->char('tahun_bayar');
             $table->unsignedBigInteger('spp_id');
+            $table->unsignedBigInteger('tahun_ajaran_id');
             $table->integer('jumlah_bayar');
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('petugas_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('siswa_id')->references('id')->on('siswa')->onDelete('cascade');
             $table->foreign('spp_id')->references('id')->on('spp')->onDelete('cascade');
+            $table->foreign('tahun_ajaran_id')->references('id')->on('tahun_ajaran')->onDelete('cascade');
         });
     }
 

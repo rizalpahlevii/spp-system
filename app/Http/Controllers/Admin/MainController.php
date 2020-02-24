@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Kelas;
+use App\Siswa;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,7 +14,11 @@ class MainController extends Controller
 {
     public function dashboard()
     {
-        return view('backend.pages.dashboard');
+        $data = [
+            'count_siswa' => Siswa::all()->count(),
+            'count_kelas' => Kelas::all()->count()
+        ];
+        return view('backend.pages.dashboard', compact('data'));
     }
     public function profile()
     {
@@ -47,15 +53,15 @@ class MainController extends Controller
         $user = User::find(Auth::guard('web')->user()->id);
         if (!Hash::check($request->password_lama, $user->password)) {
             session()->flash('message_type', 'danger');
-            session()->flash('message','Password Lama tidak sesuai!');
+            session()->flash('message', 'Password Lama tidak sesuai!');
         } else {
             $user->password = Hash::make($request->password_baru);
             if ($user->save()) {
                 session()->flash('message_type', 'success');
-                session()->flash('message','Password berhasil diupdate!');
+                session()->flash('message', 'Password berhasil diupdate!');
             } else {
                 session()->flash('message_type', 'danger');
-                session()->flash('message','Password gagal diupdate!');
+                session()->flash('message', 'Password gagal diupdate!');
             }
         }
         return redirect()->back();
