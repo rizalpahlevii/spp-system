@@ -27,7 +27,7 @@
                 <a class="nav-link {{set_active(['admin.petugas_index','admin.petugas_create','admin.petugas_edit'])}}" href="{{route('admin.petugas_index')}}"><i class="fa fa-fw fa-users"></i>Petugas <span class="badge badge-success">6</span></a>
             </li>
             <li class="nav-item ">
-                <a class="nav-link {{set_active(['admin.pembayaran_index'])}}" href="{{route('admin.pembayaran_index')}}"><i class="fas fa-fw fa-list"></i>Pembayaran SPP <span class="badge badge-success">6</span></a>
+                <a class="nav-link {{set_active(['admin.pembayaran_index','admin.pembayaran_create'])}}" href="{{route('admin.pembayaran_index')}}"><i class="fas fa-fw fa-list"></i>Pembayaran SPP <span class="badge badge-success">6</span></a>
             </li>
         </ul>
     </div>

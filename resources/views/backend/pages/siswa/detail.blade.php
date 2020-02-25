@@ -73,7 +73,7 @@
                                     <td>{{$siswa->alamat}}</td>
                                 </tr>
                                 <tr>
-                                    <th>SPP</th>
+                                    <th>Nominal SPP</th>
                                     <td>:</td>
                                     <td>{{rupiah($siswa->spp->nominal)}}</td>
                                 </tr>

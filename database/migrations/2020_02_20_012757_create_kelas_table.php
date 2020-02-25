@@ -18,9 +18,11 @@ class CreateKelasTable extends Migration
             $table->string('nama_kelas');
             $table->string('kompetensi_keahlian');
             $table->unsignedBigInteger('tahun_ajaran_id');
+            $table->unsignedBigInteger('master_kelas_id');
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('tahun_ajaran_id')->references('id')->on('tahun_ajaran')->onDelete('cascade');
+            $table->foreign('master_kelas_id')->references('id')->on('master_kelas')->onDelete('cascade');
         });
     }
 

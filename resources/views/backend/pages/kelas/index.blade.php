@@ -51,6 +51,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Nama Kelas</th>
+                                    <th>Kelas</th>
                                     <th>Kompetensi Keahlian</th>
                                     <th>Tahun Ajaran</th>
                                     <th>Action</th>
@@ -61,6 +62,7 @@
                                     <tr>
                                         <td>{{$loop->iteration}}</td>
                                         <td>{{$row->nama_kelas}}</td>
+                                        <td>{{$row->master_kelas->name}}</td>
                                         <td>{{$row->kompetensi_keahlian}}</td>
                                         <td>{{$row->tahun_ajaran->concat_tahun}}</td>
                                         <td>
@@ -118,6 +120,17 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="master_kelas">Kelas</label>
+                                <select name="master_kelas" id="master_kelas" class="form-control" required>
+                                    <option disabled selected>--Pilih Kelas--</option>
+                                    @foreach ($master_kelas as $rowm)
+                                        <option value="{{$rowm->id}}">{{$rowm->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -137,6 +150,7 @@
                 $('.modal-title').html(`Tambah Kelas`);
                 $('#name').val('');
                 $('#kompetensi_keahlian').val('');
+                $('#master_kelas').val('');
                 $('#tahun_ajaran').val('');
                 $('.btn-save').html('Simpan');
                 $('#form-kelas').attr('action',"{{route('admin.kelas_create')}}");
@@ -153,6 +167,7 @@
                         $('#name').val(response.nama_kelas);
                         $('#id').val(response.id);
                         $('#kompetensi_keahlian').val(response.kompetensi_keahlian);
+                        $('#master_kelas').val(response.master_kelas.name);
                         $('#tahun_ajaran').val(response.tahun_ajaran.id);
                         $('#exampleModal').modal('show');
                     }

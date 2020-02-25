@@ -6,7 +6,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLevelTable extends Migration
+class CreateMasterKelasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,13 +15,15 @@ class CreateLevelTable extends Migration
      */
     public function up()
     {
-        Schema::create('level', function (Blueprint $table) {
+        Schema::create('master_kelas', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('nama');
+            $table->string('name');
             $table->timestamps();
         });
-        DB::table('level')->insert([
-            ['nama' => 'Admin', 'created_at' => Carbon::now()]
+        DB::table('master_kelas')->insert([
+            ['name' => 'X', 'created_at' => Carbon::now()],
+            ['name' => 'XI', 'created_at' => Carbon::now()],
+            ['name' => 'XII', 'created_at' => Carbon::now()],
         ]);
     }
 
@@ -32,6 +34,6 @@ class CreateLevelTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('level');
+        Schema::dropIfExists('master_kelas');
     }
 }

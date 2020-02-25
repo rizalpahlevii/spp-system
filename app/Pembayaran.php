@@ -26,4 +26,8 @@ class Pembayaran extends Model
     {
         return $this->belongsTo(Tahun_ajaran::class, 'tahun_ajaran_id', 'id');
     }
+    public function master_kelas()
+    {
+        return $this->belongsTo(Master_kelas::class, 'master_kelas_id', 'id');
+    }
 }

@@ -2,6 +2,7 @@
 
 Auth::routes(['register' => false]);
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/testing', 'Admin\PembayaranController@testing');
 Route::group(['prefix' => 'login'], function () use ($router) {
     $router->get('/admin', 'Auth\LoginController@showAdminLoginForm')->name('view.login.admin');
     $router->get('/siswa', 'Auth\LoginController@showSiswaLoginForm')->name('view.login.siswa');
@@ -48,6 +49,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.petugas', 'auth']], fu
         $router->post('/update/{id}', 'Admin\SiswaController@update')->name('admin.siswa_update');
         $router->get('/{id}/edit', 'Admin\SiswaController@show')->name('admin.siswa_show');
         $router->get('/{id}/detail', 'Admin\SiswaController@detail')->name('admin.siswa_detail');
+        $router->get('/{id}/spp', 'Admin\SiswaController@sppSiswa')->name('admin.siswa_spp');
         $router->get('/delete/{id}', 'Admin\SiswaController@destroy')->name('admin.siswa_delete');
     });
 
@@ -72,6 +74,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.petugas', 'auth']], fu
 
     $router->group(['prefix' => 'pembayaran'], function () use ($router) {
         $router->get('/', 'Admin\PembayaranController@index')->name('admin.pembayaran_index');
+        $router->get('/create', 'Admin\PembayaranController@create')->name('admin.pembayaran_create');
+        $router->post('/store', 'Admin\PembayaranController@store')->name('admin.pembayaran_store');
+        $router->group(['prefix' => 'ajax'], function () use ($router) {
+            $router->get('/getSiswa/{nis}', 'Admin\PembayaranController@getSiswa')->name('admin.pembayaran_ajax_get_siswa');
+        });
     });
 });
 

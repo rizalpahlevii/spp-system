@@ -42,7 +42,7 @@
                             @endif
                         </div>
                     </div>
-                    <a href="{{route('admin.petugas_create')}}" class="btn btn-primary mb-2 btn-add">Tambah Siswa</a>
+                    <a href="{{route('admin.pembayaran_create')}}" class="btn btn-primary mb-2 btn-add"><i class="fas fa-plus"></i></a>
                     <form action="" method="GET">
                         <div class="row">
                             <div class="col-md-4">
@@ -74,7 +74,35 @@
                     </form>
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="dataTable">
-                            
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nama</th>
+                                    <th>NIS</th>
+                                    <th>Kelas</th>
+                                    <th>SPP Bulan</th>
+                                    <th>Tanggal Bayar</th>
+                                    <th>Tahun Ajaran</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($pembayaran as $row)
+                                    <tr>
+                                        <td>{{$loop->iteration}}</td>
+                                        <td>{{$row->siswa->name}}</td>
+                                        <td>{{$row->siswa->nis}}</td>
+                                        <td>{{$row->siswa->kelas->nama_kelas}}</td>
+                                        <td>{{getMonthSetting($row->tahun_ajaran->id,$row->bulan_bayar)}}</td>
+                                        <td>{{$row->tgl_bayar}}</td>
+                                        <td>{{$row->tahun_ajaran->concat_tahun}}</td>
+                                        <td>
+                                            <a href="#" class="btn btn-success"><i class="fas fa-list"></i></a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                            {{$pembayaran->links()}}
                         </table>
                     </div>
                 </div>
@@ -89,7 +117,9 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('.table').dataTable();
+        $('.table').dataTable({
+             "paging":   false
+        });
     });
 </script>
 @endpush

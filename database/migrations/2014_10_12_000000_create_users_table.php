@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -29,13 +30,15 @@ class CreateUsersTable extends Migration
             'email' => 'mrizalpahlevi372@gmail.com',
             'username' => 'rizalpahlevi',
             'password' => Hash::make(12345678),
-            'level' => 'Admin'
+            'level' => 'Admin',
+            'created_at' => Carbon::now()
         ], [
             'name' => 'Petugas SPP',
             'email' => 'petugas@gmail.com',
             'username' => 'petugas',
             'password' => Hash::make(12345678),
-            'level' => 'Petugas'
+            'level' => 'Petugas',
+            'created_at' => Carbon::now()
         ]]);
     }
 

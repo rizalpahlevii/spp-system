@@ -1,5 +1,56 @@
 <?php
 
+use App\Tahun_ajaran_setting;
+
+if (!function_exists('getMonthSetting')) {
+    function getMonthSetting($tahun_ajaran_id, $value)
+    {
+        $setting = Tahun_ajaran_setting::where('tahun_ajaran_id', $tahun_ajaran_id)->first();
+        switch ($value) {
+            case 1:
+                $ret = convert_bulan($setting->bulan1);
+                break;
+            case 2:
+                $ret = convert_bulan($setting->bulan2);
+                break;
+            case 3:
+                $ret = convert_bulan($setting->bulan3);
+                break;
+            case 4:
+                $ret = convert_bulan($setting->bulan4);
+                break;
+            case 5:
+                $ret = convert_bulan($setting->bulan5);
+                break;
+            case 6:
+                $ret = convert_bulan($setting->bulan6);
+                break;
+            case 7:
+                $ret = convert_bulan($setting->bulan7);
+                break;
+            case 8:
+                $ret = convert_bulan($setting->bulan8);
+                break;
+            case 9:
+                $ret = convert_bulan($setting->bulan9);
+                break;
+            case 10:
+                $ret = convert_bulan($setting->bulan10);
+                break;
+            case 11:
+                $ret = convert_bulan($setting->bulan11);
+                break;
+            case 12:
+                $ret = convert_bulan($setting->bulan12);
+                break;
+
+            default:
+                $ret = 1;
+                break;
+        }
+        return $ret;
+    }
+}
 if (!function_exists('set_active')) {
     function set_active($uri, $output = 'active')
     {

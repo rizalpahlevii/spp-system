@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Kelas;
+use App\Master_kelas;
 use App\Siswa;
 use App\Spp;
 use App\Tahun_ajaran;
@@ -14,9 +15,10 @@ class KelasController extends Controller
     protected $path = 'backend.pages.';
     public function index()
     {
-        $kelas = Kelas::with('tahun_ajaran')->get();
+        $kelas = Kelas::with('tahun_ajaran', 'master_kelas')->get();
         $tahun_ajaran = Tahun_ajaran::has('tahun_ajaran_setting')->get();
-        return view($this->path . 'kelas.index', compact('kelas', 'tahun_ajaran'));
+        $master_kelas = Master_kelas::get();
+        return view($this->path . 'kelas.index', compact('kelas', 'tahun_ajaran', 'master_kelas'));
     }
     public function createSiswaByKelas($id)
     {
@@ -29,6 +31,7 @@ class KelasController extends Controller
         $kelas->nama_kelas = $request->name;
         $kelas->tahun_ajaran_id = $request->tahun_ajaran;
         $kelas->kompetensi_keahlian = $request->kompetensi_keahlian;
+        $kelas->master_kelas_id = $request->master_kelas;
         if ($kelas->save()) {
             session()->flash('message', 'Data Berhasil disimpan');
             session()->flash('message_type', 'success');
@@ -40,7 +43,7 @@ class KelasController extends Controller
     }
     public function show($id)
     {
-        return response()->json(Kelas::with('tahun_ajaran')->where('id', $id)->firstOrFail());
+        return response()->json(Kelas::with('tahun_ajaran', 'master_kelas')->where('id', $id)->firstOrFail());
     }
     public function update(Request $request)
     {
@@ -48,6 +51,8 @@ class KelasController extends Controller
         $kelas->nama_kelas = $request->name;
         $kelas->tahun_ajaran_id = $request->tahun_ajaran;
         $kelas->kompetensi_keahlian = $request->kompetensi_keahlian;
+        $kelas->master_kelas_id = $request->master_kelas;
+
         if ($kelas->save()) {
             session()->flash('message', 'Data Berhasil diedit');
             session()->flash('message_type', 'success');
