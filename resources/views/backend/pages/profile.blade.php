@@ -48,6 +48,12 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
+                                            <label for="level">Level</label>
+                                            <input type="text" name="level" class="form-control" id="level" value="{{$data->level->nama}}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
                                             <label for="email">E-Mail</label>
                                             <input type="text" name="email" class="form-control" id="email" value="{{$data->email}}" readonly>
                                         </div>

@@ -91,8 +91,9 @@
                                             <label for="level">Level</label>
                                             <select name="level" id="level" class="form-control">
                                                 <option disabled selected>--Pilih Level--</option>
-                                                <option value="Admin" <?= ($petugas->level == "Admin") ? 'selected':''; ?>>Admin</option>
-                                                <option value="Petugas" <?= ($petugas->level == "Petugas") ? 'selected':''; ?>>Petugas</option>
+                                                @foreach ($level as $item)
+                                                    <option value="{{$item->id}}" {{$petugas->level_id == $item->id ? 'selected':''}}>{{$item->nama}}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>

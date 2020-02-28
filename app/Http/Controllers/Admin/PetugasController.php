@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Level;
 use App\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -18,12 +19,14 @@ class PetugasController extends Controller
     public function index()
     {
         $userInfo = Auth::guard('web')->user();
-        $users = User::whereNotIn('id', [$userInfo->id])->get();
-        return view($this->path . 'petugas.index', compact('users'));
+        $level = Level::all();
+        $users = User::with('level')->whereNotIn('id', [$userInfo->id])->get();
+        return view($this->path . 'petugas.index', compact('users', 'level'));
     }
     public function create()
     {
-        return view($this->path . 'petugas.create');
+        $level = Level::all();
+        return view($this->path . 'petugas.create', compact('level'));
     }
     public function store(Request $request)
     {
@@ -40,7 +43,7 @@ class PetugasController extends Controller
         $petugas->email = $request->email;
         $petugas->username = $request->username;
         $petugas->password = Hash::make($request->password);
-        $petugas->level = $request->level;
+        $petugas->level_id = $request->level;
         if ($petugas->save()) {
             session()->flash('message', 'Data Berhasil dihapus');
             session()->flash('message_type', 'success');
@@ -53,7 +56,8 @@ class PetugasController extends Controller
     public function show($id)
     {
         $petugas = User::find($id);
-        return view($this->path . 'petugas.edit', compact('petugas'));
+        $level = Level::all();
+        return view($this->path . 'petugas.edit', compact('petugas', 'level'));
     }
     public function update(Request $request, $id)
     {
@@ -75,7 +79,7 @@ class PetugasController extends Controller
             $petugas->name = $request->name;
             $petugas->email = $request->email;
             $petugas->username = $request->username;
-            $petugas->level = $request->level;
+            $petugas->level_id = $request->level;
             if ($petugas->save()) {
                 session()->flash('message', 'Data Berhasil diedit');
                 session()->flash('message_type', 'success');

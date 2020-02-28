@@ -100,7 +100,7 @@ class PembayaranController extends Controller
             $pmb->jumlah_bayar = $data->spp->nominal;
             $pmb->save();
         }
-        session()->flash('message', 'Berhasil menyimpan SPP siswa:' . $data->name . ' selama ' . $request->how_many_months . ' bulan');
+        session()->flash('message', 'Berhasil menyimpan SPP siswa : ' . $data->name . ' selama ' . $request->how_many_months . ' bulan');
         session()->flash('message_type', 'success');
         return redirect()->route('admin.pembayaran_index');
     }
@@ -113,31 +113,19 @@ class PembayaranController extends Controller
             ->where('master_kelas_id', $siswa->kelas->master_kelas_id)
             ->orderBy('bulan_bayar', 'desc')->first();
         $tahun_ajaran = $siswa->kelas->tahun_ajaran;
-        $getMonthSetting = static::getMonthSetting($tahun_ajaran->id, (int) $get_last_spp->bulan_bayar);
-
-
         if ($get_last_spp) {
-            $response = [
-                'data_siswa' => $siswa,
-                'data' => [
-                    'terakhir_spp_value' => $getMonthSetting,
-                    'terakhir_spp' => convert_bulan($getMonthSetting),
-                    'option_bayar' => static::getOptionBayar((int) $get_last_spp->bulan_bayar, $siswa->kelas->tahun_ajaran->id),
-                    'nominal_spp' => $siswa->spp->nominal
-                ]
-            ];
-        } else {
-            $response = [
-                'data_siswa' => $siswa,
-                'data' => [
-                    'terakhir_spp_value' => 0,
-                    'terakhir_spp' => 0,
-                    'option_bayar' => static::getOptionBayar(0, $siswa->kelas->tahun_ajaran->id),
-                    'nominal_spp' => $siswa->spp->nominal
-                ]
-            ];
+            $getMonthSetting = static::getMonthSetting($tahun_ajaran->id, (int) $get_last_spp->bulan_bayar);
         }
 
+        $response = [
+            'data_siswa' => $siswa,
+            'data' => [
+                'terakhir_spp_value' => $get_last_spp ? $getMonthSetting : 0,
+                'terakhir_spp' => $get_last_spp ? convert_bulan($getMonthSetting) : 0,
+                'option_bayar' => $get_last_spp ? static::getOptionBayar((int) $get_last_spp->bulan_bayar, $siswa->kelas->tahun_ajaran->id) : static::getOptionBayar(0, $siswa->kelas->tahun_ajaran->id),
+                'nominal_spp' => $siswa->spp->nominal
+            ]
+        ];
         return response()->json($response, 200);
     }
     private static function getOptionBayar($spp_terakhir, $tahun_ajaran_id)
@@ -218,5 +206,9 @@ class PembayaranController extends Controller
                 break;
         }
         return $ret;
+    }
+    public function testing()
+    {
+        return $this->getSiswa(11700618);
     }
 }

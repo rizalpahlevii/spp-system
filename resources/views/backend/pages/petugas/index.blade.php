@@ -64,7 +64,7 @@
                                         <td>{{$item->name}}</td>
                                         <td>{{$item->email}}</td>
                                         <td>{{$item->username}}</td>
-                                        <td>{{$item->level}}</td>
+                                        <td>{{$item->level->nama}}</td>
                                         <td>{{$item->created_at->format('d - M - Y')}}</td>
                                         <td>
                                             <a href="{{route('admin.petugas_edit',$item->id)}}" class="btn btn-warning"><i class="fas fa-edit"></i></a>

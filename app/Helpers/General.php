@@ -136,7 +136,7 @@ if (!function_exists('getBulan')) {
         $bulan = [
             [
                 'id' => 1,
-                'name' => 'Januar1'
+                'name' => 'Januari'
             ],
             [
                 'id' => 2,

@@ -16,13 +16,14 @@ class MainController extends Controller
     {
         $data = [
             'count_siswa' => Siswa::all()->count(),
-            'count_kelas' => Kelas::all()->count()
+            'count_kelas' => Kelas::all()->count(),
+            'count_petugas' => User::all()->count(),
         ];
         return view('backend.pages.dashboard', compact('data'));
     }
     public function profile()
     {
-        $data = User::find(Auth::guard('web')->user()->id);
+        $data = User::with('level')->find(Auth::guard('web')->user()->id);
         return view('backend.pages.profile', compact('data'));
     }
     public function updateProfile(Request $request)

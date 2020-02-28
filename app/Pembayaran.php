@@ -20,7 +20,7 @@ class Pembayaran extends Model
     }
     public function spp()
     {
-        return $this->belongsTo(Spp::class, 'spp_is', 'id');
+        return $this->belongsTo(Spp::class, 'spp_id', 'id');
     }
     public function tahun_ajaran()
     {

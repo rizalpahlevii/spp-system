@@ -21,7 +21,8 @@ class CreateLevelTable extends Migration
             $table->timestamps();
         });
         DB::table('level')->insert([
-            ['nama' => 'Admin', 'created_at' => Carbon::now()]
+            ['nama' => 'Admin', 'created_at' => Carbon::now()],
+            ['nama' => 'Petugas', 'created_at' => Carbon::now()],
         ]);
     }
 

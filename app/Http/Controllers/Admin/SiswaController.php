@@ -6,6 +6,8 @@ use App\Kelas;
 use App\Spp;
 use App\Siswa;
 use App\Http\Controllers\Controller;
+use App\Master_kelas;
+use App\Pembayaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Input;
@@ -139,5 +141,23 @@ class SiswaController extends Controller
     {
         $siswa = Siswa::with('spp', 'kelas')->where('id', $id)->first();
         return view($this->path . 'siswa.detail', compact('siswa'));
+    }
+    public function sppSiswa($id)
+    {
+        $data = Siswa::with('kelas.master_kelas')->where('id', $id)->firstOrFail();
+        $master_kelas = Master_kelas::get();
+        if (isset($_GET['mk'])) {
+            $master_kelas_param = $_GET['mk'];
+            $siswa = Siswa::with(['pembayaran' => function ($query) use ($master_kelas_param) {
+                $query->where('master_kelas_id', $master_kelas_param);
+                $query->with('spp');
+            }])->with('kelas.master_kelas')->where('id', $id)->firstOrFail();
+        } else {
+            $siswa = Siswa::with(['pembayaran' => function ($query) use ($data) {
+                $query->where('master_kelas_id', $data->kelas->master_kelas_id);
+                $query->with('spp');
+            }])->with('kelas.master_kelas')->where('id', $id)->firstOrFail();
+        }
+        return view($this->path . 'siswa.spp', compact('siswa', 'master_kelas'));
     }
 }

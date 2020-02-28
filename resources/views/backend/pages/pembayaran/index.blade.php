@@ -79,9 +79,9 @@
                                     <th>#</th>
                                     <th>Nama</th>
                                     <th>NIS</th>
+                                    <th>Tanggal Bayar</th>
                                     <th>Kelas</th>
                                     <th>SPP Bulan</th>
-                                    <th>Tanggal Bayar</th>
                                     <th>Tahun Ajaran</th>
                                     <th>Action</th>
                                 </tr>
@@ -92,9 +92,9 @@
                                         <td>{{$loop->iteration}}</td>
                                         <td>{{$row->siswa->name}}</td>
                                         <td>{{$row->siswa->nis}}</td>
+                                        <td>{{$row->tgl_bayar}}</td>
                                         <td>{{$row->siswa->kelas->nama_kelas}}</td>
                                         <td>{{getMonthSetting($row->tahun_ajaran->id,$row->bulan_bayar)}}</td>
-                                        <td>{{$row->tgl_bayar}}</td>
                                         <td>{{$row->tahun_ajaran->concat_tahun}}</td>
                                         <td>
                                             <a href="#" class="btn btn-success"><i class="fas fa-list"></i></a>
@@ -114,12 +114,3 @@
     </div>
 </div>
 @endsection
-@push('script')
-<script>
-    $(document).ready(function(){
-        $('.table').dataTable({
-             "paging":   false
-        });
-    });
-</script>
-@endpush
