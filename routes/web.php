@@ -1,7 +1,9 @@
 <?php
 
 Auth::routes(['register' => false]);
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/', function () {
+    return redirect()->route('view.login.admin');
+})->name('landing');
 Route::get('/testing', 'Admin\PembayaranController@testing');
 Route::group(['prefix' => 'login'], function () use ($router) {
     $router->get('/admin', 'Auth\LoginController@showAdminLoginForm')->name('view.login.admin');
@@ -84,8 +86,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.petugas', 'auth']], fu
 
 
 
-Route::group(['prefix' => 'siswa', 'middleware' => ['auth.siswa', 'auth']], function () use ($router) {
-    $router->get('/', function () {
-        return "siswa";
-    });
+Route::group(['prefix' => 'siswa'], function () use ($router) {
+    $router->get('/', 'Siswa\MainController@dashboard')->name('siswa.dashboard');
+    $router->get('/profile', 'Siswa\MainController@profile')->name('siswa.profile');
+    $router->post('/profile', 'Siswa\MainController@updateProfile')->name('siswa.profile_update');
+    $router->get('/changepassword', 'Siswa\MainController@changePassword')->name('siswa.change_password');
+    $router->post('/changepassword', 'Siswa\MainController@updatePassword')->name('siswa.password_update');
 });

@@ -33,6 +33,15 @@
 								<div class="logo text-center"><img src="{{asset('assets_template')}}/img/logo-dark.png" alt="Klorofil Logo"></div>
 								<p class="lead">Login to your account</p>
 							</div>
+							@if (Session::has('message'))
+								<div class="row">
+									<div class="col-md-12">
+										<div class="alert alert-danger">
+											{{Session::get('message')}}
+										</div>
+									</div>
+								</div>
+							@endif
 							<form class="form-auth-small" action="{{url("login/$url")}}" method="POST">
 								@csrf
 								@if ($url == "admin")
@@ -66,8 +75,8 @@
 					<div class="right">
 						<div class="overlay"></div>
 						<div class="content text">
-							<h1 class="heading">SCHOOL SPP SYSTEM</h1>
-							<p>by The Develovers</p>
+							<h1 class="heading">SCHOOL SPP SYSTEM {{$url == "admin" ? " / ADMIN" : " / SISWA"}}</h1>
+							<p>SMK WIKRAMA 1 JEPARA</p>
 						</div>
 					</div>
 					<div class="clearfix"></div>

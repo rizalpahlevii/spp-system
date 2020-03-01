@@ -161,6 +161,11 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-12">
+                                        <p><b>Catatan : </b> Default password untuk siswa : wikrama</p>
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <input type="submit" name="submit" value="Simpan" class="btn btn-primary">
