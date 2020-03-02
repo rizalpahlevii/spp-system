@@ -53,6 +53,22 @@
                         </div>
                     </form>
                     <div class="row">
+                        <div class="col-md-7">
+                            <table class="table">
+                                <tr>
+                                    <th>Kelas</th>
+                                    <td>:</td>
+                                    <td>{{ $master_kelas_view->name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Kompetensi Keahlian</th>
+                                    <td>:</td>
+                                    <td>{{$siswa->kelas->kompetensi_keahlian}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row mt-5">
                         <div class="col-md-6">
                             <table class="table">
                                 <tr>

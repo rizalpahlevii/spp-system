@@ -151,13 +151,15 @@ class SiswaController extends Controller
             $siswa = Siswa::with(['pembayaran' => function ($query) use ($master_kelas_param) {
                 $query->where('master_kelas_id', $master_kelas_param);
                 $query->with('spp');
-            }])->with('kelas.master_kelas')->where('id', $id)->firstOrFail();
+            }])->with('kelas.master_kelas', 'kelas.tahun_ajaran')->where('id', $id)->firstOrFail();
+            $master_kelas_view = Master_kelas::find($_GET['mk']);
         } else {
             $siswa = Siswa::with(['pembayaran' => function ($query) use ($data) {
                 $query->where('master_kelas_id', $data->kelas->master_kelas_id);
                 $query->with('spp');
-            }])->with('kelas.master_kelas')->where('id', $id)->firstOrFail();
+            }])->with('kelas.master_kelas', 'kelas.tahun_ajaran')->where('id', $id)->firstOrFail();
+            $master_kelas_view = Master_kelas::find($data->kelas->master_kelas_id);
         }
-        return view($this->path . 'siswa.spp', compact('siswa', 'master_kelas'));
+        return view($this->path . 'siswa.spp', compact('siswa', 'master_kelas', 'master_kelas_view'));
     }
 }

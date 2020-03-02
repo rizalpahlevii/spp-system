@@ -11,6 +11,7 @@ use App\Tahun_ajaran_setting;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PembayaranController extends Controller
 {
@@ -64,6 +65,7 @@ class PembayaranController extends Controller
     }
     public function store(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'nis' => 'required',
             'name' => 'required',
@@ -73,32 +75,42 @@ class PembayaranController extends Controller
             'total_bayar' => 'required'
         ]);
         $data = Siswa::with('spp', 'kelas', 'kelas.tahun_ajaran', 'kelas.master_kelas')->where('id', $request->siswa_id)->first();
-        if ($request->how_many_months > 1) {
-            for ($i = 1; $i < $request->how_many_months + 1; $i++) {
+        $lastSpp = Pembayaran::where('siswa_id', $request->siswa_id)->where('master_kelas_id', $data->kelas->master_kelas_id)->orderBy('bulan_bayar', 'desc')->first();
+        $bulan_bayar = $lastSpp ? (int) $lastSpp->bulan_bayar : 0;
+        DB::beginTransaction();
+        try {
+            if ($request->how_many_months > 1) {
+                for ($i = 1; $i < $request->how_many_months + 1; $i++) {
+                    $pmb = new Pembayaran();
+                    $pmb->petugas_id = Auth::guard('web')->user()->id;
+                    $pmb->siswa_id = $request->siswa_id;
+                    $pmb->tgl_bayar = date('Y-m-d');
+                    $pmb->bulan_bayar = $bulan_bayar + $i;
+                    $pmb->tahun_bayar = date('Y');
+                    $pmb->spp_id = $data->spp_id;
+                    $pmb->tahun_ajaran_id = $data->kelas->tahun_ajaran->id;
+                    $pmb->jumlah_bayar = $data->spp->nominal;
+                    $pmb->master_kelas_id = $data->kelas->master_kelas_id;
+                    $pmb->save();
+                }
+            } else {
                 $pmb = new Pembayaran();
                 $pmb->petugas_id = Auth::guard('web')->user()->id;
                 $pmb->siswa_id = $request->siswa_id;
                 $pmb->tgl_bayar = date('Y-m-d');
-                $pmb->bulan_bayar = $request->terakhir_bayar_value + $i;
+                $pmb->bulan_bayar = $bulan_bayar + 1;
                 $pmb->tahun_bayar = date('Y');
                 $pmb->spp_id = $data->spp_id;
                 $pmb->tahun_ajaran_id = $data->kelas->tahun_ajaran->id;
-                $pmb->jumlah_bayar = $data->spp->nominal;
                 $pmb->master_kelas_id = $data->kelas->master_kelas_id;
+                $pmb->jumlah_bayar = $data->spp->nominal;
                 $pmb->save();
             }
-        } else {
-            $pmb = new Pembayaran();
-            $pmb->petugas_id = Auth::guard('web')->user()->id;
-            $pmb->siswa_id = $request->siswa_id;
-            $pmb->tgl_bayar = date('Y-m-d');
-            $pmb->bulan_bayar = $request->terakhir_bayar_value + 1;
-            $pmb->tahun_bayar = date('Y');
-            $pmb->spp_id = $data->spp_id;
-            $pmb->tahun_ajaran_id = $data->kelas->tahun_ajaran->id;
-            $pmb->master_kelas_id = $data->kelas->master_kelas_id;
-            $pmb->jumlah_bayar = $data->spp->nominal;
-            $pmb->save();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            session()->flash('message', 'Gagal Meyimpan Transaksi');
+            session()->flash('message_type', 'danger');
         }
         session()->flash('message', 'Berhasil menyimpan SPP siswa : ' . $data->name . ' selama ' . $request->how_many_months . ' bulan');
         session()->flash('message_type', 'success');

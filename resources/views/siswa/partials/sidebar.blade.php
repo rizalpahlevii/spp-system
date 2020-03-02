@@ -12,6 +12,10 @@
                 <a class="nav-link {{set_active(['siswa.dashboard'])}}" href="{{route('siswa.dashboard')}}"><i class="fa fa-fw fa-user-circle"></i>Dashboard <span class="badge badge-success">6</span></a>
             </li>
             
+            <li class="nav-item ">
+                <a class="nav-link {{set_active(['siswa.history_index'])}}" href="{{route('siswa.history_index')}}"><i class="fa fa-fw fa-money-bill-alt"></i>History <span class="badge badge-success">6</span></a>
+            </li>
+            
         </ul>
     </div>
 </nav>

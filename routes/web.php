@@ -92,4 +92,7 @@ Route::group(['prefix' => 'siswa'], function () use ($router) {
     $router->post('/profile', 'Siswa\MainController@updateProfile')->name('siswa.profile_update');
     $router->get('/changepassword', 'Siswa\MainController@changePassword')->name('siswa.change_password');
     $router->post('/changepassword', 'Siswa\MainController@updatePassword')->name('siswa.password_update');
+    $router->group(['prefix' => 'history'], function () use ($router) {
+        $router->get('/', 'Siswa\HistoryController@index')->name('siswa.history_index');
+    });
 });

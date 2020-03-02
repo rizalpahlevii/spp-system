@@ -39,10 +39,15 @@ class LoginController extends Controller
             return redirect()->back();
         }
         $request->validate([
-            'email' => 'required|email',
+            'email' => 'required',
             'password' => 'required|min:5'
         ]);
-        if (Auth::guard('web')->attempt(['email' => $request->email, 'password' => $request->password], $request->get('remember'))) {
+        if (filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
+            $credentials = ['email' => $request->email, 'password' => $request->password];
+        } else {
+            $credentials = ['username' => $request->email, 'password' => $request->password];
+        }
+        if (Auth::guard('web')->attempt($credentials, $request->get('remember'))) {
             return redirect()->intended('/admin');
         }
         session()->flash('message', 'Email atau password salah!');

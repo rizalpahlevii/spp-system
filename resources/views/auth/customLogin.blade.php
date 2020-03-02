@@ -30,7 +30,8 @@
 					<div class="left">
 						<div class="content">
 							<div class="header">
-								<div class="logo text-center"><img src="{{asset('assets_template')}}/img/logo-dark.png" alt="Klorofil Logo"></div>
+								<h2>E-SPP SYSTEM</h2>
+								{{-- <div class="logo text-center"><img src="{{asset('assets_template')}}/img/logo-dark.png" alt="Klorofil Logo"></div> --}}
 								<p class="lead">Login to your account</p>
 							</div>
 							@if (Session::has('message'))
@@ -46,8 +47,8 @@
 								@csrf
 								@if ($url == "admin")
 									<div class="form-group">
-										<label for="email" class="control-label sr-only">Email</label>
-										<input type="email" class="form-control" name="email" id="email" placeholder="Email">
+										<label for="email" class="control-label sr-only">Email / Username</label>
+										<input type="text" class="form-control" name="email" id="email" placeholder="Email / Username">
 									</div>
 								@else
 									<div class="form-group">
@@ -61,7 +62,7 @@
 								</div>
 								<div class="form-group clearfix">
 									<label class="fancy-checkbox element-left">
-										<input type="checkbox">
+										<input type="checkbox" name="remember" id="remember">
 										<span>Remember me</span>
 									</label>
 								</div>
