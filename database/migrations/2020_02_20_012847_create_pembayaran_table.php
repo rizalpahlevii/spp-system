@@ -26,11 +26,6 @@ class CreatePembayaranTable extends Migration
             $table->integer('jumlah_bayar');
             $table->timestamps();
             $table->softDeletes();
-            $table->foreign('petugas_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('siswa_id')->references('id')->on('siswa')->onDelete('cascade');
-            $table->foreign('spp_id')->references('id')->on('spp')->onDelete('cascade');
-            $table->foreign('tahun_ajaran_id')->references('id')->on('tahun_ajaran')->onDelete('cascade');
-            $table->foreign('master_kelas_id')->references('id')->on('master_kelas')->onDelete('cascade');
         });
     }
 

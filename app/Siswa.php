@@ -10,7 +10,6 @@ use Illuminate\Notifications\Notifiable;
 class Siswa extends Authenticatable
 {
     use Notifiable;
-    use SoftDeletes;
     protected $guard = 'siswa';
     protected $table = 'siswa';
     protected $fillable = ['nisn', 'nis', 'name', 'password', 'kelas_id', 'alamat', 'no_telp', 'spp_id'];

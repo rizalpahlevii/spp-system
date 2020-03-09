@@ -1,6 +1,7 @@
 <?php
 
 use App\Tahun_ajaran_setting;
+use App\User_role;
 
 if (!function_exists('getMonthSetting')) {
     function getMonthSetting($tahun_ajaran_id, $value)
@@ -214,5 +215,16 @@ if (!function_exists('set_selected_option_ta')) {
             $status = " ";
         }
         return $status;
+    }
+}
+if (!function_exists('set_checked')) {
+    function set_checked($menu_id, $level_id)
+    {
+        $query = User_role::where('role_id', $menu_id)->where('level_id', $level_id)->first();
+        if ($query) {
+            return "checked";
+        } else {
+            return " ";
+        }
     }
 }

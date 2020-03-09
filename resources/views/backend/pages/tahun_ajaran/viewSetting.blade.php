@@ -107,7 +107,7 @@
                                     <tr>
                                         <td>Bulan Ke-10</td>
                                         <td>
-                                            {{convert_bulan($tahun_ajaran->tahun_ajaran_setting->bulan1d)}}
+                                            {{convert_bulan($tahun_ajaran->tahun_ajaran_setting->bulan10)}}
                                         </td>
                                     </tr>
                                         

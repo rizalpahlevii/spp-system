@@ -87,6 +87,7 @@
                                             <a href="{{route('admin.siswa_detail',$row->id)}}" class="btn btn-success"><i class="fas fa-list"></i></a>
                                             <a href="{{route('admin.siswa_show',$row->id)}}" class="btn btn-warning"><i class="fas fa-edit"></i></a>
                                             <a href="{{route('admin.siswa_spp',$row->id)}}" class="btn btn-info"><i class="fa fa-money-bill-alt"></i></a>
+                                            <a href="{{route('admin.siswa_spp_create',$row->id)}}" class="btn btn-primary"><i class="fa fa-plus"></i></a>
                                             <a href="{{route('admin.siswa_delete',$row->id)}}" class="btn btn-danger" onclick="return confirm('Yakin ingin menghapus siswa ini ?')"><i class="fas fa-trash-alt"></i></a>
                                         </td>
                                     </tr>

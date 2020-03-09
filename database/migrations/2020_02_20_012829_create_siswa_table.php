@@ -25,9 +25,6 @@ class CreateSiswaTable extends Migration
             $table->string('no_telp')->nullable();
             $table->unsignedBigInteger('spp_id');
             $table->timestamps();
-            $table->foreign('kelas_id')->references('id')->on('kelas')->onDelete('cascade');
-            $table->foreign('spp_id')->references('id')->on('spp')->onDelete('cascade');
-            $table->softDeletes();
         });
     }
 

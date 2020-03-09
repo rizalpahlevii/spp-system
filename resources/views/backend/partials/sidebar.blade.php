@@ -29,6 +29,19 @@
             <li class="nav-item ">
                 <a class="nav-link {{set_active(['admin.pembayaran_index','admin.pembayaran_create'])}}" href="{{route('admin.pembayaran_index')}}"><i class="fas fa-fw fa-list"></i>Pembayaran SPP <span class="badge badge-success">6</span></a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link {{set_active(['admin.role_menu','admin.role_user'])}}" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-3" aria-controls="submenu-3"><i class="fas fa-fw fa-chart-pie"></i>Roles</a>
+                <div id="submenu-3" class="collapse submenu" style="">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{route('admin.role_menu')}}">Menu Management</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{route('admin.role_user')}}">Role User Management</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
         </ul>
     </div>
 </nav>

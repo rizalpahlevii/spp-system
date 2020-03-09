@@ -48,7 +48,7 @@ class LoginController extends Controller
             $credentials = ['username' => $request->email, 'password' => $request->password];
         }
         if (Auth::guard('web')->attempt($credentials, $request->get('remember'))) {
-            return redirect()->intended('/admin');
+            return redirect()->intended('/admin/dashboard');
         }
         session()->flash('message', 'Email atau password salah!');
         return back()->withInput($request->only('email', 'remember'));

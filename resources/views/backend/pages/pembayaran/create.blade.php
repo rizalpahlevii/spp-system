@@ -26,9 +26,6 @@
     <!-- end pageheader -->
     <!-- ============================================================== -->
     <div class="row">
-        <!-- ============================================================== -->
-        <!-- basic table  -->
-        <!-- ============================================================== -->
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
             <div class="card">
                 <h5 class="card-header">@yield('page')</h5>
@@ -97,7 +94,7 @@
                                     <select name="bayar_sampai" id="bayar_sampai" class="form-control" disabled>
                                         <option disabled selected>--Pilih Opsi Berikut--</option>
                                     </select>
-                                    @error('byara_sampai')
+                                    @error('bayar_sampai')
                                         <div class="invalid-feedback">
                                             {{$message}}
                                         </div>
@@ -123,9 +120,30 @@
                 </div>
             </div>
         </div>
-        <!-- ============================================================== -->
-        <!-- end basic table  -->
-        <!-- ============================================================== -->
+    </div>
+    <div class="row" id="kotak-pembayaran" hidden>
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="card">
+                <h5 class="card-header">Data Pembayaran</h5>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered first">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Tanggal Bayar</th>
+                                    <th>SPP Kelas</th>
+                                    <th>SPP Bulan</th>
+                                    <th>Tahun Ajaran</th>
+                                </tr>
+                            </thead>
+                            <tbody id="load-data-pembayaran">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <input type="hidden" name="length_nis" id="length_nis" value="{{$length_nis}}">
@@ -144,7 +162,6 @@
                     dataType:"json",
                     success:function(response)
                     {
-                        console.log(response);
                         $('#terakhir_bayar_value').val(response.data.terakhir_spp_value)
                         $('#nominal_spp').val(response.data.nominal_spp);
                         $('#name').val(response.data_siswa.name);
@@ -162,6 +179,11 @@
                         $('#bayar_sampai').removeAttr('disabled');
                         $('#bayar_sampai').html(html_option);
                         load_total(response.data.terakhir_spp_value,response.data.terakhir_spp_value+1);
+                        if(response.data.history.length > 0){
+                            loadDataPembayaran(response.data,response.data_siswa);
+                        }else{
+                            $('#kotak-pembayaran').attr('hidden');
+                        }
                     }
                 });
             }
@@ -177,6 +199,125 @@
             const result = nominal*kl;
             $('#how_many_months').val(kl);
             $('#total_bayar').val(result);
+        }
+        function loadDataPembayaran(data,siswa)
+        {
+            const history = data.history;
+            var html = '';
+            $.each(history, function(i,item){
+                html += `<tr>
+                            <td>${i+1}</td>
+                            <td>${item.tgl_bayar}</td>
+                            <td>${item.master_kelas.name}</td>
+                            <td>${jsonBulan(data.setting, item.bulan_bayar)}</td>
+                            <td>${item.tahun_ajaran.concat_tahun}</td>
+                        </tr>
+                `;
+            });
+            $('.card-header').html('Data Pembayaran SPP ' + siswa.name);
+            $('#kotak-pembayaran').removeAttr('hidden');
+            $('#load-data-pembayaran').html(html);
+        }
+        function jsonBulan(setting,bulan_bayar)
+        {
+            var ret;
+            var bulan_bayar = parseInt(bulan_bayar);
+            switch (bulan_bayar) {
+                case 1:
+                    ret = setting.bulan1;
+                    break;
+                case 2:
+                    ret = setting.bulan2;
+                    break;
+                case 3:
+                    ret = setting.bulan3;
+                    break;
+                case 4:
+                    ret = setting.bulan4;
+                    break;
+                case 5:
+                    ret = setting.bulan5;
+                    break;
+                case 6:
+                    ret = setting.bulan6;
+                    break;
+                case 7:
+                    ret = setting.bulan7;
+                    break;
+                case 8:
+                    ret = setting.bulan8;
+                    break;
+                case 9:
+                    ret = setting.bulan9;
+                    break;
+                case 10:
+                    ret = setting.bulan10;
+                    break;
+                case 11:
+                    ret = setting.bulan11;
+                    break;
+                case 12:
+                    ret = setting.bulan12;
+                    break;
+                default:
+                    ret = 'Not Define';
+                    break;
+            }
+            
+            var res;
+            switch (ret) {
+                case 1:
+                    res = "Januari";
+                    break;
+            
+                case 2:
+                    res = "Februari";
+                    break;
+            
+                case 3:
+                    res = "Maret";
+                    break;
+            
+                case 4:
+                    res = "April";
+                    break;
+            
+                case 5:
+                    res = "Mei";
+                    break;
+            
+                case 6:
+                    res = "Juni";
+                    break;
+            
+                case 7:
+                    res = "Juli";
+                    break;
+            
+                case 8:
+                    res = "Agustus";
+                    break;
+            
+                case 9:
+                    res = "September";
+                    break;
+            
+                case 10:
+                    res = "Oktober";
+                    break;
+            
+                case 11:
+                    res = "November";
+                    break;
+            
+                case 12:
+                    res = "Desember";
+                    break;
+                default:
+                    res = "Not Define";
+                    break;
+            }   
+            return res;
         }
     });
 </script>

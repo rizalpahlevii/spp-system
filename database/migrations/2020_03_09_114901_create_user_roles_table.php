@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSppTable extends Migration
+class CreateUserRolesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateSppTable extends Migration
      */
     public function up()
     {
-        Schema::create('spp', function (Blueprint $table) {
+        Schema::create('user_roles', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('tahun_ajaran_id');
-            $table->integer('nominal');
+            $table->unsignedBigInteger('level_id');
+            $table->unsignedBigInteger('role_id');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -29,6 +28,6 @@ class CreateSppTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('spp');
+        Schema::dropIfExists('user_roles');
     }
 }

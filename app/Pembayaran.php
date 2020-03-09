@@ -10,6 +10,7 @@ class Pembayaran extends Model
     use SoftDeletes;
     protected $table = 'pembayaran';
     protected $fillable = ['petugas_id', 'siswa_id', 'tgl_bayar', 'bulan_bayar', 'tahun_bayar', 'spp_id', 'jumlah_bayar'];
+
     public function petugas()
     {
         return $this->belongsTo(User::class, 'petugas_id', 'id');

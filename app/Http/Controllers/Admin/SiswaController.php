@@ -8,6 +8,7 @@ use App\Siswa;
 use App\Http\Controllers\Controller;
 use App\Master_kelas;
 use App\Pembayaran;
+use App\Tahun_ajaran_setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Input;
@@ -98,12 +99,12 @@ class SiswaController extends Controller
     {
         $request->validate([
             'name' => 'required|min:6',
-            'nis' => 'required|min:8|unique:siswa',
+            'nis' => 'required|min:8',
             'kelas' => 'required',
             'spp' => 'required',
             'alamat' => 'required|min:15',
             'no_telp' => 'required|min:10',
-            'jenis_kelamin' => 'reuired'
+            'jenis_kelamin' => 'required'
         ]);
         $siswa = Siswa::find($id);
         $siswa->nisn = $request->nisn;
@@ -161,5 +162,34 @@ class SiswaController extends Controller
             $master_kelas_view = Master_kelas::find($data->kelas->master_kelas_id);
         }
         return view($this->path . 'siswa.spp', compact('siswa', 'master_kelas', 'master_kelas_view'));
+    }
+    public function sppSiswaCreate($id)
+    {
+        $siswa = Siswa::with('kelas', 'kelas.tahun_ajaran', 'kelas.master_kelas', 'spp')->where('id', $id)->firstOrFail();
+
+        $pembayaran = Pembayaran::with('spp', 'tahun_ajaran', 'master_kelas')->where('tahun_ajaran_id', $siswa->kelas->tahun_ajaran_id)->where('master_kelas_id', $siswa->kelas->master_kelas_id)->orderBy('bulan_bayar', 'desc')->get();
+
+        $setting = Tahun_ajaran_setting::where('tahun_ajaran_id', $siswa->kelas->tahun_ajaran_id)->first();
+
+        $ta = $siswa->kelas->tahun_ajaran_id;
+        $viewSetting = $this->viewSetting($setting, $pembayaran);
+        $limit = $pembayaran->count();
+        return view($this->path . 'siswa.spp_create', compact('siswa', 'pembayaran', 'viewSetting', 'limit'));
+    }
+    private function viewSetting($tahun_ajaran_setting, $pembayaran)
+    {
+        $array = [];
+        $setting = $tahun_ajaran_setting->toArray();
+        $count = $pembayaran->count();
+        foreach ($pembayaran as $key => $row) {
+            $key++;
+            $array[] = ['key' => $key, 'value_name' => getMonthSetting($setting['tahun_ajaran_id'], $setting['bulan' . $key]), 'checked' => true];
+            if ($key == $count) {
+                for ($i = count($array) + 1; $i <= 12; $i++) {
+                    $array[] = ['key' => $i, 'value_name' => getMonthSetting($setting['tahun_ajaran_id'], $setting['bulan' . $i]), 'checked' => false];
+                }
+            }
+        }
+        return $array;
     }
 }

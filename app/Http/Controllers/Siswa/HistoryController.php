@@ -34,17 +34,17 @@ class HistoryController extends Controller
             if ($_GET['kelas'] != "all") {
                 $siswa = Siswa::with(['pembayaran' => function ($query) use ($master_kelas_param) {
                     $query->where('master_kelas_id', $master_kelas_param);
-                    $query->with('spp');
+                    $query->with('spp', 'tahun_ajaran');
                 }])->with('kelas.master_kelas')->where('id', $userInfo->id)->firstOrFail();
             } else {
                 $siswa = Siswa::with(['pembayaran' => function ($query) use ($master_kelas_param) {
-                    $query->with('spp');
+                    $query->with('spp', 'tahun_ajaran');
                 }])->with('kelas.master_kelas')->where('id', $userInfo->id)->firstOrFail();
             }
         } else {
             $siswa = Siswa::with(['pembayaran' => function ($query) use ($data) {
                 $query->where('master_kelas_id', $data->kelas->master_kelas_id);
-                $query->with('spp');
+                $query->with('spp', 'tahun_ajaran');
             }])->with('kelas.master_kelas')->where('id', $userInfo->id)->firstOrFail();
         }
         return view($this->path . 'history.index', compact('siswa', 'master_kelas'));

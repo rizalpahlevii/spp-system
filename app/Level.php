@@ -12,4 +12,12 @@ class Level extends Model
     {
         return $this->hasMany(User::class, 'level_id', 'id');
     }
+    public function user_role()
+    {
+        return $this->hasMany(User_role::class, 'level_id', 'id');
+    }
+    // public function role()
+    // {
+    //     return $this->hasMany(User_role::class, 'level_id', 'id');
+    // }
 }

@@ -26,6 +26,7 @@ copy .env.example .env
 3. Setting database name, username, and password in your .env file
 4. Do the following instructions if you're done setting database in .env
 ```bash
+php artisan migrate
 php artisan key:generate
 ```
 ## To run the application

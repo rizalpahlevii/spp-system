@@ -28,20 +28,20 @@ class PembayaranController extends Controller
         if (isset($_GET['kelas']) || isset($_GET['ta'])) {
             $param_kelas = $_GET['kelas'];
             if ($_GET['kelas'] == "all") {
-                $pembayaran = Pembayaran::with('siswa', 'petugas', 'spp', 'tahun_ajaran', 'tahun_ajaran.tahun_ajaran_setting');
+                $pembayaran = Pembayaran::with('siswa', 'petugas', 'spp', 'tahun_ajaran', 'tahun_ajaran.tahun_ajaran_setting', 'master_kelas');
             } else {
                 $pembayaran = Pembayaran::whereHas('siswa', function ($query) use ($param_kelas) {
                     $query->where('kelas_id', $param_kelas);
-                })->with('petugas', 'spp', 'siswa.kelas', 'tahun_ajaran', 'tahun_ajaran.tahun_ajaran_setting');
+                })->with('petugas', 'spp', 'siswa.kelas', 'tahun_ajaran', 'tahun_ajaran.tahun_ajaran_setting', 'master_kelas');
             }
             $ta = $_GET['ta'];
             if ($_GET['ta'] != "all") {
                 $pembayaran = $pembayaran->where('tahun_ajaran_id', $ta);
             }
         } else {
-            $pembayaran = Pembayaran::with('siswa', 'petugas', 'spp', 'tahun_ajaran', 'tahun_ajaran.tahun_ajaran_setting');
+            $pembayaran = Pembayaran::with('siswa', 'petugas', 'spp', 'tahun_ajaran', 'tahun_ajaran.tahun_ajaran_setting', 'master_kelas');
         }
-        $pembayaran = $pembayaran->paginate(15);
+        $pembayaran = $pembayaran->get();
         return view($this->path . 'pembayaran.index', compact('pembayaran', 'kelas', 'tahun_ajaran'));
     }
     private static function getMinLengthNIS()
@@ -123,8 +123,12 @@ class PembayaranController extends Controller
         $get_last_spp = Pembayaran::where('siswa_id', $siswa->id)
             ->where('tahun_ajaran_id', $siswa->kelas->tahun_ajaran_id)
             ->where('master_kelas_id', $siswa->kelas->master_kelas_id)
-            ->orderBy('bulan_bayar', 'desc')->first();
+            ->orderBy('id', 'desc')->first();
+        $history_spp = Pembayaran::with('spp', 'tahun_ajaran', 'master_kelas')->where('siswa_id', $siswa->id)->get();
+
         $tahun_ajaran = $siswa->kelas->tahun_ajaran;
+        $setting = Tahun_ajaran_setting::where('tahun_ajaran_id', $tahun_ajaran->id)->first();
+
         if ($get_last_spp) {
             $getMonthSetting = static::getMonthSetting($tahun_ajaran->id, (int) $get_last_spp->bulan_bayar);
         }
@@ -135,7 +139,9 @@ class PembayaranController extends Controller
                 'terakhir_spp_value' => $get_last_spp ? $getMonthSetting : 0,
                 'terakhir_spp' => $get_last_spp ? convert_bulan($getMonthSetting) : 0,
                 'option_bayar' => $get_last_spp ? static::getOptionBayar((int) $get_last_spp->bulan_bayar, $siswa->kelas->tahun_ajaran->id) : static::getOptionBayar(0, $siswa->kelas->tahun_ajaran->id),
-                'nominal_spp' => $siswa->spp->nominal
+                'nominal_spp' => $siswa->spp->nominal,
+                'history' => $history_spp,
+                'setting' => $setting
             ]
         ];
         return response()->json($response, 200);

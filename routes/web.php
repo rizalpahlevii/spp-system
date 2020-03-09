@@ -1,6 +1,6 @@
 <?php
 
-Auth::routes(['register' => false]);
+Auth::routes(['register' => false, 'reset' => false, 'verify' => false]);
 Route::get('/', function () {
     return redirect()->route('view.login.admin');
 })->name('landing');
@@ -12,7 +12,7 @@ Route::group(['prefix' => 'login'], function () use ($router) {
     $router->post('/siswa', 'Auth\LoginController@siswaLogin');
 });
 Route::group(['prefix' => 'admin', 'middleware' => ['auth.petugas', 'auth']], function () use ($router) {
-    $router->get('/', 'Admin\MainController@dashboard')->name('admin.dashboard');
+    $router->get('/dashboard', 'Admin\MainController@dashboard')->name('admin.dashboard');
     $router->get('/profile', 'Admin\MainController@profile')->name('admin.profile');
     $router->post('/profile', 'Admin\MainController@updateProfile')->name('admin.profile_update');
     $router->get('/changepassword', 'Admin\MainController@changePassword')->name('admin.change_password');
@@ -52,6 +52,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.petugas', 'auth']], fu
         $router->get('/{id}/edit', 'Admin\SiswaController@show')->name('admin.siswa_show');
         $router->get('/{id}/detail', 'Admin\SiswaController@detail')->name('admin.siswa_detail');
         $router->get('/{id}/spp', 'Admin\SiswaController@sppSiswa')->name('admin.siswa_spp');
+        $router->get('/{id}/spp/create', 'Admin\SiswaController@sppSiswaCreate')->name('admin.siswa_spp_create');
         $router->get('/delete/{id}', 'Admin\SiswaController@destroy')->name('admin.siswa_delete');
     });
 
@@ -80,6 +81,20 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.petugas', 'auth']], fu
         $router->post('/store', 'Admin\PembayaranController@store')->name('admin.pembayaran_store');
         $router->group(['prefix' => 'ajax'], function () use ($router) {
             $router->get('/getSiswa/{nis}', 'Admin\PembayaranController@getSiswa')->name('admin.pembayaran_ajax_get_siswa');
+        });
+    });
+    $router->group(['prefix' => 'role'], function () use ($router) {
+        $router->group(['prefix' => 'menu'], function () use ($router) {
+            $router->get('/', 'Admin\MenuController@index')->name('admin.role_menu');
+            $router->get('/create', 'Admin\MenuController@create')->name('admin.role_menu_create');
+            $router->post('/store', 'Admin\MenuController@store')->name('admin.role_menu_store');
+            $router->get('/{id}/edit', 'Admin\MenuController@show')->name('admin.role_menu_show');
+            $router->post('/update/{id}', 'Admin\MenuController@update')->name('admin.role_menu_update');
+        });
+        $router->group(['prefix' => 'user'], function () use ($router) {
+            $router->get('/', 'Admin\UserRoleController@index')->name('admin.role_user');
+            $router->get('{id}/show', 'Admin\UserRoleController@show')->name('admin.role_user_show');
+            $router->post('/save', 'Admin\UserRoleController@save')->name('admin.role_user_save');
         });
     });
 });
