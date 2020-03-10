@@ -124,7 +124,7 @@ class PembayaranController extends Controller
             ->where('tahun_ajaran_id', $siswa->kelas->tahun_ajaran_id)
             ->where('master_kelas_id', $siswa->kelas->master_kelas_id)
             ->orderBy('id', 'desc')->first();
-        $history_spp = Pembayaran::with('spp', 'tahun_ajaran', 'master_kelas')->where('siswa_id', $siswa->id)->get();
+        $history_spp = Pembayaran::with('spp', 'tahun_ajaran', 'master_kelas', 'siswa.kelas')->where('siswa_id', $siswa->id)->get();
 
         $tahun_ajaran = $siswa->kelas->tahun_ajaran;
         $setting = Tahun_ajaran_setting::where('tahun_ajaran_id', $tahun_ajaran->id)->first();

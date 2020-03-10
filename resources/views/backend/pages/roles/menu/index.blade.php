@@ -42,7 +42,7 @@
                             @endif
                         </div>
                     </div>
-                    <a href="{{route('admin.role_menu_create')}}"  class="btn btn-primary mb-2 btn-add">Tambah</a>
+                    {{-- <a href="{{route('admin.role_menu_create')}}"  class="btn btn-primary mb-2 btn-add">Tambah</a> --}}
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered first">
                             <thead>

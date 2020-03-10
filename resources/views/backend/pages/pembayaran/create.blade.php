@@ -132,6 +132,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Tanggal Bayar</th>
+                                    <th>Nama Kelas</th>
                                     <th>SPP Kelas</th>
                                     <th>SPP Bulan</th>
                                     <th>Tahun Ajaran</th>
@@ -162,6 +163,7 @@
                     dataType:"json",
                     success:function(response)
                     {
+                        console.log(response);
                         $('#terakhir_bayar_value').val(response.data.terakhir_spp_value)
                         $('#nominal_spp').val(response.data.nominal_spp);
                         $('#name').val(response.data_siswa.name);
@@ -208,6 +210,7 @@
                 html += `<tr>
                             <td>${i+1}</td>
                             <td>${item.tgl_bayar}</td>
+                            <td>${item.siswa.kelas.nama_kelas} | ${item.siswa.kelas.kompetensi_keahlian}</td>
                             <td>${item.master_kelas.name}</td>
                             <td>${jsonBulan(data.setting, item.bulan_bayar)}</td>
                             <td>${item.tahun_ajaran.concat_tahun}</td>

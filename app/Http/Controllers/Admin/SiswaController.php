@@ -167,14 +167,83 @@ class SiswaController extends Controller
     {
         $siswa = Siswa::with('kelas', 'kelas.tahun_ajaran', 'kelas.master_kelas', 'spp')->where('id', $id)->firstOrFail();
 
-        $pembayaran = Pembayaran::with('spp', 'tahun_ajaran', 'master_kelas')->where('tahun_ajaran_id', $siswa->kelas->tahun_ajaran_id)->where('master_kelas_id', $siswa->kelas->master_kelas_id)->orderBy('bulan_bayar', 'desc')->get();
+        $get_last_spp = Pembayaran::where('siswa_id', $siswa->id)
+            ->where('tahun_ajaran_id', $siswa->kelas->tahun_ajaran_id)
+            ->where('master_kelas_id', $siswa->kelas->master_kelas_id)
+            ->orderBy('id', 'desc')->first();
+        $history_spp = Pembayaran::with('spp', 'tahun_ajaran', 'master_kelas', 'siswa.kelas')->where('siswa_id', $siswa->id)->get();
 
-        $setting = Tahun_ajaran_setting::where('tahun_ajaran_id', $siswa->kelas->tahun_ajaran_id)->first();
+        $tahun_ajaran = $siswa->kelas->tahun_ajaran;
+        $setting = Tahun_ajaran_setting::where('tahun_ajaran_id', $tahun_ajaran->id)->first();
 
-        $ta = $siswa->kelas->tahun_ajaran_id;
-        $viewSetting = $this->viewSetting($setting, $pembayaran);
-        $limit = $pembayaran->count();
-        return view($this->path . 'siswa.spp_create', compact('siswa', 'pembayaran', 'viewSetting', 'limit'));
+        if ($get_last_spp) {
+            $getMonthSetting = static::getMonthSetting($tahun_ajaran->id, (int) $get_last_spp->bulan_bayar);
+        }
+
+        $data = [
+            'data_siswa' => $siswa,
+            'data' => [
+                'terakhir_spp_value' => $get_last_spp ? $getMonthSetting : 0,
+                'terakhir_spp' => $get_last_spp ? convert_bulan($getMonthSetting) : 0,
+                'option_bayar' => $get_last_spp ? static::getOptionBayar((int) $get_last_spp->bulan_bayar, $siswa->kelas->tahun_ajaran->id) : static::getOptionBayar(0, $siswa->kelas->tahun_ajaran->id),
+                'nominal_spp' => $siswa->spp->nominal,
+                'history' => $history_spp,
+                'setting' => $setting
+            ]
+        ];
+        return view($this->path . 'siswa.spp_create', compact('siswa', 'data'));
+    }
+    public function sppSiswaStore(Request $request, $id)
+    {
+        $request->validate([
+            'nis' => 'required',
+            'name' => 'required',
+            'kelas' => 'required',
+            'spp_terakhir' => 'required',
+            'bayar_sampai' => 'required',
+            'total_bayar' => 'required'
+        ]);
+        $data = Siswa::with('spp', 'kelas', 'kelas.tahun_ajaran', 'kelas.master_kelas')->where('id', $id)->first();
+        $lastSpp = Pembayaran::where('siswa_id', $request->siswa_id)->where('master_kelas_id', $data->kelas->master_kelas_id)->orderBy('bulan_bayar', 'desc')->first();
+        $bulan_bayar = $lastSpp ? (int) $lastSpp->bulan_bayar : 0;
+        DB::beginTransaction();
+        try {
+            if ($request->how_many_months > 1) {
+                for ($i = 1; $i < $request->how_many_months + 1; $i++) {
+                    $pmb = new Pembayaran();
+                    $pmb->petugas_id = Auth::guard('web')->user()->id;
+                    $pmb->siswa_id = $request->siswa_id;
+                    $pmb->tgl_bayar = date('Y-m-d');
+                    $pmb->bulan_bayar = $bulan_bayar + $i;
+                    $pmb->tahun_bayar = date('Y');
+                    $pmb->spp_id = $data->spp_id;
+                    $pmb->tahun_ajaran_id = $data->kelas->tahun_ajaran->id;
+                    $pmb->jumlah_bayar = $data->spp->nominal;
+                    $pmb->master_kelas_id = $data->kelas->master_kelas_id;
+                    $pmb->save();
+                }
+            } else {
+                $pmb = new Pembayaran();
+                $pmb->petugas_id = Auth::guard('web')->user()->id;
+                $pmb->siswa_id = $request->siswa_id;
+                $pmb->tgl_bayar = date('Y-m-d');
+                $pmb->bulan_bayar = $bulan_bayar + 1;
+                $pmb->tahun_bayar = date('Y');
+                $pmb->spp_id = $data->spp_id;
+                $pmb->tahun_ajaran_id = $data->kelas->tahun_ajaran->id;
+                $pmb->master_kelas_id = $data->kelas->master_kelas_id;
+                $pmb->jumlah_bayar = $data->spp->nominal;
+                $pmb->save();
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            session()->flash('message', 'Gagal Meyimpan Transaksi');
+            session()->flash('message_type', 'danger');
+        }
+        session()->flash('message', 'Berhasil menyimpan SPP siswa : ' . $data->name . ' selama ' . $request->how_many_months . ' bulan');
+        session()->flash('message_type', 'success');
+        return redirect()->route('admin.siswa_index');
     }
     private function viewSetting($tahun_ajaran_setting, $pembayaran)
     {
@@ -191,5 +260,84 @@ class SiswaController extends Controller
             }
         }
         return $array;
+    }
+    private static function getOptionBayar($spp_terakhir, $tahun_ajaran_id)
+    {
+        $setting = Tahun_ajaran_setting::where('tahun_ajaran_id', $tahun_ajaran_id)->first();
+        $arr = [];
+        $value_setting = [
+            ['id' => 1, 'value' => $setting->bulan1],
+            ['id' => 2, 'value' => $setting->bulan2],
+            ['id' => 3, 'value' => $setting->bulan3],
+            ['id' => 4, 'value' => $setting->bulan4],
+            ['id' => 5, 'value' => $setting->bulan5],
+            ['id' => 6, 'value' => $setting->bulan6],
+            ['id' => 7, 'value' => $setting->bulan7],
+            ['id' => 8, 'value' => $setting->bulan8],
+            ['id' => 9, 'value' => $setting->bulan9],
+            ['id' => 10, 'value' => $setting->bulan10],
+            ['id' => 11, 'value' => $setting->bulan11],
+            ['id' => 12, 'value' => $setting->bulan12]
+        ];
+        if ($spp_terakhir != 0) {
+            $value_setting2 = $value_setting;
+            foreach ($value_setting as $key => $row) {
+                if ($row['id'] > $spp_terakhir) {
+                    $arr[] = ['id' => $row['value'], 'name' => convert_bulan($row['value'])];
+                }
+            }
+        } else {
+            foreach ($value_setting as $key => $row) {
+                $arr[] = ['id' => $row['value'], 'name' => convert_bulan($row['value'])];
+            }
+        }
+        return $arr;
+    }
+    private static function getMonthSetting($tahun_ajaran_id, $value_id)
+    {
+        $setting = Tahun_ajaran_setting::where('tahun_ajaran_id', $tahun_ajaran_id)->first();
+        switch ($value_id) {
+            case 1:
+                $ret = $setting->bulan1;
+                break;
+            case 2:
+                $ret = $setting->bulan2;
+                break;
+            case 3:
+                $ret = $setting->bulan3;
+                break;
+            case 4:
+                $ret = $setting->bulan4;
+                break;
+            case 5:
+                $ret = $setting->bulan5;
+                break;
+            case 6:
+                $ret = $setting->bulan6;
+                break;
+            case 7:
+                $ret = $setting->bulan7;
+                break;
+            case 8:
+                $ret = $setting->bulan8;
+                break;
+            case 9:
+                $ret = $setting->bulan9;
+                break;
+            case 10:
+                $ret = $setting->bulan10;
+                break;
+            case 11:
+                $ret = $setting->bulan11;
+                break;
+            case 12:
+                $ret = $setting->bulan12;
+                break;
+
+            default:
+                $ret = 1;
+                break;
+        }
+        return $ret;
     }
 }

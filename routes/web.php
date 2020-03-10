@@ -53,6 +53,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.petugas', 'auth']], fu
         $router->get('/{id}/detail', 'Admin\SiswaController@detail')->name('admin.siswa_detail');
         $router->get('/{id}/spp', 'Admin\SiswaController@sppSiswa')->name('admin.siswa_spp');
         $router->get('/{id}/spp/create', 'Admin\SiswaController@sppSiswaCreate')->name('admin.siswa_spp_create');
+        $router->get('/{id}/spp/store', 'Admin\SiswaController@sppSiswaStore')->name('admin.siswa_spp_store');
         $router->get('/delete/{id}', 'Admin\SiswaController@destroy')->name('admin.siswa_delete');
     });
 
@@ -86,8 +87,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth.petugas', 'auth']], fu
     $router->group(['prefix' => 'role'], function () use ($router) {
         $router->group(['prefix' => 'menu'], function () use ($router) {
             $router->get('/', 'Admin\MenuController@index')->name('admin.role_menu');
-            $router->get('/create', 'Admin\MenuController@create')->name('admin.role_menu_create');
-            $router->post('/store', 'Admin\MenuController@store')->name('admin.role_menu_store');
+            // $router->get('/create', 'Admin\MenuController@create')->name('admin.role_menu_create');
+            // $router->post('/store', 'Admin\MenuController@store')->name('admin.role_menu_store');
             $router->get('/{id}/edit', 'Admin\MenuController@show')->name('admin.role_menu_show');
             $router->post('/update/{id}', 'Admin\MenuController@update')->name('admin.role_menu_update');
         });

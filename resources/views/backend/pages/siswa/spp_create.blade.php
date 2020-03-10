@@ -33,36 +33,96 @@
             <div class="card">
                 <h5 class="card-header">Transaksi SPP | {{$siswa->kelas->tahun_ajaran->concat_tahun}}</h5>
                 <div class="card-body">
-                    <div class="row">
-                        <input type="hidden" name="nominal" id="nominal" value="{{$siswa->spp->nominal}}">
-                        @foreach ($viewSetting as $key=>$item)
-                        @php
-                            $key++;
-                        @endphp
-                            <div class="col-md-3 mb-3">
-                                <div class="form-group row">
-                                    <label class="col-12 col-sm-3 col-form-label text-sm-right">{{$item['value_name']}}</label>
-                                    <div class="col-12 col-sm-8 col-lg-6 pt-1">
-                                        <div class="switch-button switch-button-success">
-                                            <input type="checkbox" {{$item['checked'] ? 'checked=""  disabled':''}} name="{{$item['value_name']}}" id="option{{$key}}" data-kode="{{$key}}" data-limit="{{$limit}}"><span>
-                                        <label for="option{{$key}}"></label></span>
+                    <form action="{{route('admin.siswa_spp_store',$siswa->id)}}" method="POST">
+                        @csrf
+                        <input type="hidden" name="how_many_months" id="how_many_months">
+                        <input type="hidden" name="siswa_id" id="siswa_id">
+                        <input type="hidden" name="terakhir_bayar_value" id="terakhir_bayar_value">
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="for">NIS ( No Induk Siswa )</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend click-nis" style="cursor:pointer;">
+                                            <span class="input-group-text">NIS</span>
                                         </div>
+                                        <input type="text" placeholder="NIS" class="form-control" name="nis" id="nis" readonly value="{{$siswa->nis}}">
                                     </div>
+                                    @error('nis')
+                                        <div class="invalid-feedback">
+                                            {{$message}}
+                                        </div>
+                                    @enderror
                                 </div>
                             </div>
-                        @endforeach
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="total">Total Bayar</label>
-                                <input type="number" name="total" id="total" class="form-control" readonly>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="name">Nama</label>
+                                    <input type="text" name="name" id="name" class="form-control" readonly style="cursor:no-drop;" value="{{$siswa->name}}">
+                                    @error('name')
+                                        <div class="invalid-feedback">
+                                            {{$message}}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="kelas">Kelas</label>
+                                    <input type="text" name="kelas" id="kelas" class="form-control" readonly style="cursor:no-drop;" value="{{$siswa->kelas->nama_kelas}} | {{$siswa->kelas->kompetensi_keahlian}}">
+                                    @error('kelas')
+                                        <div class="invalid-feedback">
+                                            {{$message}}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="spp_terakhir">SPP Terakhir</label>
+                                    <input type="text" name="spp_terakhir" id="spp_terakhir" class="form-control" readonly style="cursor:no-drop;" value="{{$data['data']['terakhir_spp']}}">
+                                    @error('spp_terkhir')
+                                        <div class="invalid-feedback">
+                                            {{$message}}
+                                        </div>
+                                    @enderror
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-3 float-right">
-                            <input type="submit" name="submit" value="Simpan" class="btn btn-primary mt-4">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="bayar_sampai">Bayar Sampai</label>
+                                    <select name="bayar_sampai" id="bayar_sampai" class="form-control">
+                                        <option disabled selected>--Pilih Opsi Berikut--</option>
+                                        @foreach ($data['data']['option_bayar'] as $option_bayar)
+                                            <option value="">{{$option_bayar}}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('bayar_sampai')
+                                        <div class="invalid-feedback">
+                                            {{$message}}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="total_bayar">Total Bayar</label>
+                                    <input type="text" name="total_bayar" id="total_bayar" class="form-control" readonly style="cursor:no-drop;">
+                                    @error('total_bayar')
+                                        <div class="invalid-feedback">
+                                            {{$message}}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="submit" name="submit" name="submit" value="Simpan" class="btn btn-primary mt-4" {{empty($data['data']['option_bayar'])?'disabled':''}}>
+                            </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -75,24 +135,18 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $(document).on('click',':checkbox',function(){
-            const id = $(this).data('kode');
-            const limit = $(this).data('limit');
-            for (let i = id+1; i <= 12; i++) {
-                $(`#option${i}`).prop('checked',true);
-            }
-            for (let j = id-1; j > 0; j--) {
-                $(`#option${i}`).prop('checked',false);
-                
-            }
-            total(limit,id);
-
-        })
-        function total(limit,id) { 
-            const kl = id - limit;
-            const total = kl * $('#nominal').val();
-            $('#total').val(total);
-         }
+        $('#bayar_sampai').change(function(){
+            const value = $(this).val();
+            load_total($('#terkahir_bayar_value').val(),$(this).val());
+        });
+        function load_total(terakhir_bayar,bayar_sampai){
+            const nominal = $('#nominal_spp').val();
+            const vb = bayar_sampai-terakhir_bayar;
+            const kl = $('#bayar_sampai option:selected').data('kode');
+            const result = nominal*kl;
+            $('#how_many_months').val(kl);
+            $('#total_bayar').val(result);
+        }
     });
 </script>
 @endpush
