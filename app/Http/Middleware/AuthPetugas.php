@@ -18,20 +18,20 @@ class AuthPetugas
      */
     public function handle($request, Closure $next)
     {
-        $user = Auth::guard('web')->user();
-        $uri = request()->segment(2);
-        if ($uri != "role") {
-            $role = Role::where('uri', $uri)->first();
-            $check = User_role::where('role_id', $role->id)->where('level_id', $user->level_id)->first();
-        } else {
-            $check = false;
-        }
+        // $user = Auth::guard('web')->user();
+        // $uri = request()->segment(2);
+        // if ($uri != "role") {
+        //     $role = Role::where('uri', $uri)->first();
+        //     $check = User_role::where('role_id', $role->id)->where('level_id', $user->level_id)->first();
+        // } else {
+        //     $check = false;
+        // }
 
-        if (!Auth::guard('web')->check() || !$check) {
-            if ($uri != "role") {
-                abort(403, 'Unauthorized action.');
-            }
-        }
+        // if (!Auth::guard('web')->check() || !$check) {
+        //     if ($uri != "role") {
+        //         abort(403, 'Unauthorized action.');
+        //     }
+        // }
         return $next($request);
     }
 }
